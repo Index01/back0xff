@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
 
+import os
 import click
 import subprocess
 import build
-import os
+import pipelines
 
 
-def run():
+def run(mode):
     """ Run the back0xff client gstreamer piepline and ui. """
-    #TODO: This should all become part of a pipeline object with python docker lib. Planned for later commit.
     build.virtualcam_linux()
+    pipelines.set_camera_capabilities()
 
-    print('\n[+] Running docker image\n')
-    volume_mounts = '-v /home/t4l3r/repoz/back0xff:/code/src/'
-    options = '--privileged'
-    command = 'gst-launch-1.0 v4l2src device=/dev/video0 ! v4l2sink device=/dev/video3'
-    image = 'back0xff:latest'
-    run_image = f'docker run --rm {volume_mounts} {options} {image} {command}'
-    proc = subprocess.Popen(run_image.split())
+    print('[+] Running Back0xff image\n')
+
+    proc = getattr(pipelines, mode)()
     try:
         proc.communicate()
     except KeyboardInterrupt as e:
@@ -33,12 +30,13 @@ def run():
 
 
 @click.command()
-@click.option('--build-new', type=click.Choice(['image','plugin']))
-def main(build_new):
+@click.option('--build-new', type=click.Choice(['image','plugin', 'virtualcam_linux']))
+@click.option('--mode', type=click.Choice(['segmentation','pass-through']))
+def main(build_new, mode):
     if build_new:
         getattr(build, build_new)()
     else:
-        run()
+        run(mode)
 
 
 
