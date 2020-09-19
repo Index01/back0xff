@@ -2,6 +2,14 @@
 # Created by https://www.gitignore.io/api/c,git,vue,vim,c++,react,linux,macos,flask,django,python,windows,visualstudio
 # Edit at https://www.gitignore.io/?templates=c,git,vue,vim,c++,react,linux,macos,flask,django,python,windows,visualstudio
 
+
+### my virtualenvs ###
+# envs
+env/
+./env/
+./venv/
+./env*/
+
 ### C ###
 # Prerequisites
 *.d
